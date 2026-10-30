@@ -4,8 +4,30 @@ Stress-test **your own CV** against a target job description. The output highlig
 direct evidence, vague claims, and requirements not found in retrieved CV passages,
 with source quotes, probing interview questions, and actionable editing suggestions.
 
-This is a local Python command-line project. It does not make hiring decisions,
+This is a local Python project with a browser UI and command-line interface. It does not make hiring decisions,
 rank people, or estimate an employer's ATS score or your chance of getting hired.
+
+## Try the browser UI
+
+From this repository:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[dev]'
+streamlit run streamlit_app.py
+```
+
+Open http://localhost:8501. Click **Load sample CV & job**, then **Stress-test my CV**
+for a free offline demonstration. For your own review, paste or upload your CV,
+paste a target job description, and select **AI assessment** in the sidebar.
+Enter your API key there or set `OPENAI_API_KEY` before launching.
+
+The UI shows findings, source quotes, interview questions and editing suggestions,
+with Markdown and JSON downloads. Changing an input clears the old result.
+Uploaded files are parsed in a temporary folder and removed after reading; reports
+are held in session memory until you download them. The server binds to your own
+computer only. This prototype has no authentication and should not be exposed publicly.
 
 ## Quick start
 
@@ -24,7 +46,9 @@ trail. Outputs are never silently overwritten; choose another filename for each 
 
 **Demo mode is a deterministic smoke test.** It uses hashed keyword vectors and
 simple overlap matching, not an LLM or semantic embeddings. It cannot meaningfully
-judge your CV. Its job description must contain `- ` bullet lines.
+judge your CV. Job descriptions can be plain text, numbered lists, or bullet lists.
+Demo mode checks up to 12 distinct sentences or lines, skipping Markdown headings
+and section labels ending in a colon. It does not semantically identify requirements.
 
 ## Stress-test your actual CV
 
@@ -92,11 +116,11 @@ python -m pytest -q
 
 Tests cover the complete offline graph, the live branch with a stub model, source
 metadata, empty inputs, invalid quotes, missing/duplicate findings, and CLI output
-preservation. They do not call a paid model API.
+preservation, UI demo flow, input errors, and clearing stale results. They do not call a paid model API.
 
 ## Scope and limits
 
-- Prototype for personal coaching: no web interface, accounts, database, or deployment.
+- Prototype for personal coaching: local browser UI, no accounts, database, or hosted deployment.
 - Semantic live retrieval and assessment need API access and incur provider charges.
 - Retrieval can miss relevant evidence; `not_found` never means you lack a skill.
 - Up to twelve extracted requirements: not a guarantee of exhaustive job coverage.

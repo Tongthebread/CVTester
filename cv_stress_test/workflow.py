@@ -72,8 +72,9 @@ def build_graph(chunks, embeddings, model=None, demo=False):
 
     def extract(state):
         if demo:
-            lines = [line.strip()[2:] for line in state["job"].splitlines() if line.strip().startswith("- ")]
-            result = Requirements(items=[{"text": line, "job_quote": line} for line in lines[:12]])
+            from .demo import demo_requirements
+
+            result = demo_requirements(state["job"])
         else:
             result = model.with_structured_output(Requirements).invoke([
                 SystemMessage(content=POLICY + " Extract up to 12 distinct, explicit job-related requirements. "

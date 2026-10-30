@@ -8,3 +8,5 @@ __pycache__/
 private/
 outputs/*
 !outputs/.gitkeep
+
+.streamlit/secrets.toml

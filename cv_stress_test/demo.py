@@ -4,7 +4,30 @@ import re
 
 from langchain_core.embeddings import Embeddings
 
-from .models import Assessment
+from .models import Assessment, Requirements
+
+
+def demo_requirements(job):
+    """Split ordinary text and lists while preserving exact source quotes."""
+    items = []
+    seen = set()
+    for line in job.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or line.endswith((":", "：")):
+            continue
+        line = re.sub(r"^(?:[-*+•–—]|\d+[.)]|\(\d+\))(?:\s+|$)", "", line).strip()
+        # shortcut: sentence/line splitting, not semantic requirement extraction.
+        for text in re.split(r"(?<=[.!?])\s+|(?<=[。！？])", line):
+            text = text.strip()
+            if not any(char.isalnum() for char in text) or text in seen:
+                continue
+            seen.add(text)
+            items.append({"text": text, "job_quote": text})
+            if len(items) == 12:
+                return Requirements(items=items)
+    if not items:
+        raise ValueError("Add job requirements as sentences or a list; headings alone are not enough.")
+    return Requirements(items=items)
 
 
 def tokens(text):
