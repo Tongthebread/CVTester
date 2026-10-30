@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cv-stress-test"
+version = "0.1.0"
+description = "Evidence-based CV stress testing with LangGraph and RAG"
+requires-python = ">=3.11"
+dependencies = [
+  "langchain-core>=1.0,<2",
+  "langgraph>=1.0,<2",
+  "langchain-openai>=1.0,<2",
+  "numpy>=1.26,<3",
+  "pydantic>=2.7,<3",
+  "pypdf>=6,<7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+cv-stress-test = "cv_stress_test.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["cv_stress_test*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
